@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <p>Ruido: <span id="ruido">---</span></p>
+    <p>Humedad: <span id="humedad">---</span></p>
+    <p>Temperatura: <span id="temperatura">---</span></p>
+    <p>Luz: <span id="luz">---</span></p>
+    <p>Última actualización: <span id="timestamp">---</span></p>
+</body>
+
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<script>
+    const socket = io();
+
+    socket.on('nuevos_datos', (data) => {
+        console.log("Datos recibidos:", data);
+        document.getElementById("ruido").innerText = data.RUIDO;
+        document.getElementById("humedad").innerText = data.HUM;
+        document.getElementById("temperatura").innerText = data.TEMP;
+        document.getElementById("luz").innerText = data.LUZ;
+        document.getElementById("timestamp").innerText = data.TIMESTAMP;
+    });
+</script>
+<!-- # RUIDO:35,HUM:45.3,TEMP:22.1,LUZ:760 -->
+</html>

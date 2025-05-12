@@ -1,0 +1,32 @@
+[
+    {
+        "target_class":"Cuarto",
+        "data":[
+            {
+                "id":1,
+                "nombre":"Sala Principal"
+            }
+        ]
+    },
+    
+    {
+        "target_class": "Sensores",
+        "data": [
+            {
+                "nombre":"Sensor de temperatura",
+                "tipo":"temperatura",
+                "cuarto_id":1
+            },
+            {
+                "nombre":"Sensor de humedad",
+                "tipo":"humedad",
+                "cuarto_id":1
+            },
+            {
+                "nombre":"Sensor de ruido",
+                "tipo":"sonido",
+                "cuarto_id":1
+            }
+        ]
+    }
+]
