@@ -84,7 +84,7 @@ class Sensor(db.Model):
     det_lecturas: Mapped[List["DetLectura"]] = relationship("DetLectura", back_populates="sensor", cascade="all, delete-orphan")
     
     def __repr__(self):
-        return f"<Sensor {self.nombre}>"
+        return f"<Sensor {self.tipo_sensor}>"
 
 
 class Lectura(db.Model):
@@ -96,7 +96,7 @@ class Lectura(db.Model):
     det_lecturas: Mapped[List["DetLectura"]] = relationship("DetLectura", back_populates="lectura", cascade="all, delete-orphan")
     
     def __repr__(self):
-        return f"<Lectura {self.id}: {self.valor}>"
+        return f"<Lectura {self.id}: {self.timestamp}>"
 
 
 class DetLectura(db.Model):
@@ -112,3 +112,28 @@ class DetLectura(db.Model):
     # Relationship to Sensor
     sensor_id: Mapped[int] = mapped_column(ForeignKey("sensores.id"))
     sensor = relationship("Sensor", back_populates="det_lecturas")
+    
+
+def register_readings( sensor_readings: dict ):
+    
+    nueva_lectura = Lectura()
+    db.session.add(nueva_lectura)
+    
+    db.session.flush()
+    
+    for sensor_type, valor in sensor_readings.items():
+        
+        sensor = db.session.query(Sensor).filter_by(tipo_sensor=sensor_type).first()
+        
+        if sensor:
+            
+            det_lectura = DetLectura(
+                lectura_id=nueva_lectura.id,
+                sensor_id=sensor.id,
+                valor=valor
+            )
+            db.session.add(det_lectura)
+        
+        
+        db.commit()
+        return nueva_lectura

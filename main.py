@@ -10,8 +10,6 @@ from database import db, Dispositivo, Lectura, Sensor, DetLectura
 from arduino_manager import Duino_Manager
 from dotenv import load_dotenv
 
-
-
 import time
 import random as r
 import os
