@@ -1,10 +1,10 @@
 import eventlet
 eventlet.monkey_patch() 
 
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template
 from flask_bootstrap import Bootstrap5
 from flask_socketio import SocketIO
-from sqlalchemy import desc, asc, and_
+from sqlalchemy import desc
 
 from database import db, Dispositivo, Lectura, Sensor, DetLectura
 from arduino_manager import Duino_Manager
@@ -74,7 +74,21 @@ def home():
 
 @app.route('/lecturas')
 def lecturas():
-    return render_template("readings.html",lecturas=Lectura.query.order_by(desc(Lectura.timestamp)).all())
+    
+    df = pd.DataFrame()
+    lecturas=Lectura.query.order_by(desc(Lectura.timestamp)).all()
+    
+    for lectura in lecturas:
+        lectura:Lectura
+        row = {}
+        row["Fecha/Hora"] = [lectura.timestamp.strftime("%Y-%m-%d %H:%M:%S")]
+        for det_lec in lectura.det_lecturas:
+            row[f"{det_lec.sensor.dispositivo.nombre} ({det_lec.sensor.unidad_medida})"] = [det_lec.valor]
+        
+        new_df = pd.DataFrame(row)
+        df = pd.concat([df,new_df], ignore_index=True)
+    
+    return render_template("readings.html",df=df, col_list=df.columns.to_list())
 
 if __name__ == "__main__":
     socketio.run(app)
