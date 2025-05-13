@@ -1,28 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Current info</title>
-</head>
+{% extends 'base.html' %} 
+{% block title %}Monitoreo {% endblock %} 
 
-<body>
-    <p>Ruido: <span id="ruido">---</span></p>
-    <p>Humedad: <span id="humedad">---</span></p>
-    <p>Temperatura: <span id="temperatura">---</span></p>
-    <p>Última actualización: <span id="timestamp">---</span></p>
-</body>
+{% block styles %}
+<style>
+    .sensor-card {
+        transition: transform 0.3s;
+    }
+    .sensor-card:hover {
+        transform: translateY(-5px);
+    }
+    .data-value {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+</style>
+{% endblock %} 
 
-<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-<script>
-    const socket = io();
+{% block content %}
+    <div class="container py-4">
+        <h1 class="text-center mb-5">Real-time Monitoring</h1>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-4">
+                <div class="card sensor-card shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Temperature</h5>
+                        <div class="data-value text-primary" id="temperatura">---</div>
+                        <p class="card-text text-muted">°C</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card sensor-card shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Humidity</h5>
+                        <div class="data-value text-success" id="humedad">---</div>
+                        <p class="card-text text-muted">%</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card sensor-card shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Noise</h5>
+                        <div class="data-value text-warning" id="ruido">---</div>
+                        <p class="card-text text-muted">dB</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Last Updated</h5>
+                        <p class="card-text" id="timestamp">---</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 
 
-    socket.on('nuevos_datos', (data) => {
-        console.log("Datos recibidos:", data);
-        document.getElementById("ruido").innerText = data.RUIDO;
-        document.getElementById("humedad").innerText = data.HUM;
-        document.getElementById("temperatura").innerText = data.TEMP;
-        document.getElementById("timestamp").innerText = data.TIMESTAMP;
-    });
-</script>
-</html>
+{% block imports %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
+    <script>
+        const socket = io();
+
+        socket.on('nuevos_datos', (data) => {
+            console.log("Datos recibidos:", data);
+            if (data.RUIDO) document.getElementById("ruido").innerText = data.RUIDO;
+            if (data.HUM) document.getElementById("humedad").innerText = data.HUM;
+            if (data.TEMP) document.getElementById("temperatura").innerText = data.TEMP;
+            if (data.TIMESTAMP) document.getElementById("timestamp").innerText = data.TIMESTAMP;
+        });
+    </script>
+{% endblock %} 
