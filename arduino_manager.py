@@ -22,11 +22,11 @@ class Duino_Manager:
                 except serial.SerialException as e:
                     print(f"Error al abrir el puerto COM3: {e}")
                     self.arduino = None
+                    time.sleep(1)
                 else:
                     print("Connected succesfully")
                     break
         
-        Thread(target=connect_to_arduino, daemon=True).start()
         
         def read_arduino():
             while True:
@@ -42,4 +42,5 @@ class Duino_Manager:
                 # FIXME: This value may vary
                 time.sleep(1)
     
+        Thread(target=connect_to_arduino, daemon=True).start()
         Thread(target=read_arduino, daemon=True).start()

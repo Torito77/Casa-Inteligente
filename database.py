@@ -111,7 +111,7 @@ class DetLectura(db.Model):
     
     # Relationship to Sensor
     sensor_id: Mapped[int] = mapped_column(ForeignKey("sensores.id"))
-    sensor = relationship("Sensor", back_populates="det_lecturas")
+    sensor: Mapped["Sensor"] = relationship("Sensor", back_populates="det_lecturas")
     
 
 def register_readings( sensor_readings: dict ):

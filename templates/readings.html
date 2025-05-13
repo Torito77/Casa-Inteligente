@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecturas</title>
+</head>
+<body>
+    <table>
+
+        <thead>
+            <tr>
+                <th scope="col">Fecha de lectura</th>
+                <th scope="col">Temperatura</th>
+                <th scope="col">Humedad</th>
+                <th scope="col">Ruido</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lectura in lecturas %}
+            <tr>
+                <th scope="row">{{ lectura.timestamp.strftime("%Y-%m-%d %H:%M:%S") }}</th>
+                <td>
+                    {% for det in lectura.det_lecturas %}
+                        {% if det.sensor.tipo_sensor == "TEMP" %}
+                            {{ det.valor }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for det in lectura.det_lecturas %}
+                        {% if det.sensor.tipo_sensor == "HUM" %}
+                            {{ det.valor }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for det in lectura.det_lecturas %}
+                        {% if det.sensor.tipo_sensor == "RUIDO" %}
+                            {{ det.valor }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <p><a href="{{ url_for('home') }}">Return to index page</a></p>
+</body>
+</html>
